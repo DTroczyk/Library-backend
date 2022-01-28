@@ -9,7 +9,6 @@ namespace Library.BLL.Entities
     {
         [Key]
         public int Id { get; set; }
-        [Key]
         public string OwnerId { get; set; }
         public User Owner { get; set; }
         [Required]
