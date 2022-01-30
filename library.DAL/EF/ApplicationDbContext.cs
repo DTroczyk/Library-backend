@@ -35,7 +35,7 @@ namespace Library.DAL.EF
                 .HasMany(i => i.Loans)
                 .WithOne(l => l.Item)
                 .HasForeignKey(l => l.ItemId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Loan>()
                 .Property(l => l.Id)
@@ -49,18 +49,18 @@ namespace Library.DAL.EF
                 .HasMany(s => s.Items)
                 .WithOne(i => i.Shefl)
                 .HasForeignKey(i => i.ShelfId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<User>()
                 .HasMany(u => u.Items)
                 .WithOne(i => i.Owner)
                 .HasForeignKey(i => i.OwnerId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<User>()
                 .HasMany(u => u.Shelves)
                 .WithOne(s => s.Owner)
                 .HasForeignKey(s => s.OwnerId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
