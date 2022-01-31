@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220130220755_InitialCreate")]
+    [Migration("20220131213413_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,10 +23,10 @@ namespace Library.DAL.Migrations
 
             modelBuilder.Entity("Library.BLL.Entities.Item", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Author")
                         .IsRequired()
@@ -52,8 +52,8 @@ namespace Library.DAL.Migrations
                     b.Property<string>("Length")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("LoanId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<int?>("LoanId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("MaxPlayers")
                         .HasColumnType("int");
@@ -68,7 +68,7 @@ namespace Library.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Pages")
+                    b.Property<int?>("Pages")
                         .HasColumnType("int");
 
                     b.Property<string>("Photo")
@@ -98,17 +98,17 @@ namespace Library.DAL.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.HasIndex("ShelfId");
+                    b.HasIndex("ShelfId", "OwnerId");
 
                     b.ToTable("Items");
                 });
 
             modelBuilder.Entity("Library.BLL.Entities.Loan", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("BorrowerId")
                         .IsRequired()
@@ -120,8 +120,8 @@ namespace Library.DAL.Migrations
                     b.Property<bool>("IsAccepted")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("ItemId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("ReturnedDate")
                         .HasColumnType("datetime2");
@@ -141,9 +141,10 @@ namespace Library.DAL.Migrations
             modelBuilder.Entity("Library.BLL.Entities.Shelf", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -152,10 +153,7 @@ namespace Library.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OwnerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
+                    b.HasKey("Id", "OwnerId");
 
                     b.HasIndex("OwnerId");
 
@@ -201,17 +199,17 @@ namespace Library.DAL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Library.BLL.Entities.Shelf", "Shefl")
+                    b.HasOne("Library.BLL.Entities.Shelf", "Shelf")
                         .WithMany("Items")
-                        .HasForeignKey("ShelfId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("ShelfId", "OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Loan");
 
                     b.Navigation("Owner");
 
-                    b.Navigation("Shefl");
+                    b.Navigation("Shelf");
                 });
 
             modelBuilder.Entity("Library.BLL.Entities.Loan", b =>
@@ -238,7 +236,8 @@ namespace Library.DAL.Migrations
                     b.HasOne("Library.BLL.Entities.User", "Owner")
                         .WithMany("Shelves")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Owner");
                 });

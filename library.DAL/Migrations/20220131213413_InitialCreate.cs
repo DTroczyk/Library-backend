@@ -27,28 +27,29 @@ namespace Library.DAL.Migrations
                 name: "Shelves",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Shelves", x => x.Id);
+                    table.PrimaryKey("PK_Shelves", x => new { x.Id, x.OwnerId });
                     table.ForeignKey(
                         name: "FK_Shelves_Users_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "Users",
-                        principalColumn: "Username");
+                        principalColumn: "Username",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Loans",
                 columns: table => new
                 {
-                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    ItemId = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ItemId = table.Column<int>(type: "int", nullable: false),
                     BorrowerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -70,7 +71,8 @@ namespace Library.DAL.Migrations
                 name: "Items",
                 columns: table => new
                 {
-                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -86,10 +88,10 @@ namespace Library.DAL.Migrations
                     MinAge = table.Column<int>(type: "int", nullable: true),
                     MinPlayers = table.Column<int>(type: "int", nullable: true),
                     Length = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Pages = table.Column<int>(type: "int", nullable: false),
+                    Pages = table.Column<int>(type: "int", nullable: true),
                     IsBorrowed = table.Column<bool>(type: "bit", nullable: false),
                     IsToLet = table.Column<bool>(type: "bit", nullable: false),
-                    LoanId = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
+                    LoanId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -101,10 +103,11 @@ namespace Library.DAL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Items_Shelves_ShelfId",
-                        column: x => x.ShelfId,
+                        name: "FK_Items_Shelves_ShelfId_OwnerId",
+                        columns: x => new { x.ShelfId, x.OwnerId },
                         principalTable: "Shelves",
-                        principalColumn: "Id");
+                        principalColumns: new[] { "Id", "OwnerId" },
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Items_Users_OwnerId",
                         column: x => x.OwnerId,
@@ -123,9 +126,9 @@ namespace Library.DAL.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_ShelfId",
+                name: "IX_Items_ShelfId_OwnerId",
                 table: "Items",
-                column: "ShelfId");
+                columns: new[] { "ShelfId", "OwnerId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Loans_BorrowerId",

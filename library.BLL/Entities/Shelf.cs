@@ -7,7 +7,6 @@ namespace Library.BLL.Entities
 {
     public class Shelf
     {
-        [Key]
         public int Id { get; set; }
         public string OwnerId { get; set; }
         public User Owner { get; set; }

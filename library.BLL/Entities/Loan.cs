@@ -9,8 +9,8 @@ namespace Library.BLL.Entities
     public class Loan
     {
         [Key]
-        public ulong Id { get; set; }
-        public ulong ItemId { get; set; }
+        public int Id { get; set; }
+        public int ItemId { get; set; }
         [ForeignKey("ItemId")]
         public Item Item { get; set; }
 

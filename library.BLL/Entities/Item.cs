@@ -8,12 +8,12 @@ namespace Library.BLL.Entities
 {
     public class Item
     {
+        [Key]
+        public int Id { get; set; }
         [Required]
         public string Author { get; set; }
         [Required]
         public string Description { get; set; }
-        [Key]
-        public ulong Id { get; set; }
         [Required]
         public string Title { get; set; }
         public string Photo { get; set; }
@@ -29,8 +29,7 @@ namespace Library.BLL.Entities
         [ForeignKey("OwnerId")]
         public User Owner { get; set; }
         public int ShelfId { get; set; }
-        [ForeignKey("ShelfId")]
-        public Shelf Shefl { get; set; }
+        public Shelf Shelf { get; set; }
         public bool IsPrivate { get; set; }
 
         public int? MaxPlayers { get; set; }
@@ -38,11 +37,11 @@ namespace Library.BLL.Entities
         public int? MinPlayers { get; set; }
         public string Length { get; set; }
 
-        public int Pages { get; set; }
+        public int? Pages { get; set; }
 
         public bool IsBorrowed { get; set; }
         public bool IsToLet { get; set; }
-        public ulong? LoanId { get; set; }
+        public int? LoanId { get; set; }
         [ForeignKey("LoanId")]
         public Loan Loan { get; set; }
         public IEnumerable<Loan> Loans { get; set; }

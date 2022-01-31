@@ -28,29 +28,6 @@ namespace Library.DAL.EF
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Item>()
-                .Property(i => i.Id)
-                .ValueGeneratedOnAdd();
-            builder.Entity<Item>()
-                .HasMany(i => i.Loans)
-                .WithOne(l => l.Item)
-                .HasForeignKey(l => l.ItemId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<Loan>()
-                .Property(l => l.Id)
-                .ValueGeneratedOnAdd();
-                
-
-            builder.Entity<Shelf>()
-                .Property(s => s.Id)
-                .ValueGeneratedOnAdd();
-            builder.Entity<Shelf>()
-                .HasMany(s => s.Items)
-                .WithOne(i => i.Shefl)
-                .HasForeignKey(i => i.ShelfId)
-                    .OnDelete(DeleteBehavior.NoAction);
-
             builder.Entity<User>()
                 .HasMany(u => u.Items)
                 .WithOne(i => i.Owner)
@@ -60,7 +37,32 @@ namespace Library.DAL.EF
                 .HasMany(u => u.Shelves)
                 .WithOne(s => s.Owner)
                 .HasForeignKey(s => s.OwnerId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Shelf>()
+                .HasKey(s => new { s.Id, s.OwnerId });
+            builder.Entity<Shelf>()
+                .HasMany(s => s.Items)
+                .WithOne(i => i.Shelf)
+                .HasForeignKey(i => i.ShelfId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Item>()
+                .Property(i => i.Id)
+                .ValueGeneratedOnAdd();
+            builder.Entity<Item>()
+                .HasMany(i => i.Loans)
+                .WithOne(l => l.Item)
+                .HasForeignKey(l => l.ItemId)
                     .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Item>()
+                .HasOne(i => i.Shelf)
+                .WithMany(s => s.Items)
+                .HasForeignKey(i => new { i.ShelfId, i.OwnerId });
+
+            builder.Entity<Loan>()
+                .Property(l => l.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }
