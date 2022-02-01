@@ -1,4 +1,8 @@
+using AutoMapper;
+using Library;
 using Library.DAL.EF;
+using Library.Services.Interfaces;
+using Library.Services.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,6 +46,16 @@ namespace library_backend
 
             var cs = new ConnectionStringDto() { ConnectionString = _connectionString };
             services.AddSingleton(cs);
+
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+            services.AddScoped<IItemService, ItemService>();
 
             services.AddControllers();
         }

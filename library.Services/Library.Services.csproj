@@ -4,4 +4,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\library.DAL\Library.DAL.csproj" />
+    <ProjectReference Include="..\Library.ViewModels\Library.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>
