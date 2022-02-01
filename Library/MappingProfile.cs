@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Library.BLL.Entities;
+using Library.ViewModels.DTOs;
 using Library.ViewModels.VMs;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Library
         {
             CreateMap<Item, ItemVm>()
                 .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => 
-                    src.Owner.Name == null && src.Owner.Surname == null 
+                     String.IsNullOrWhiteSpace(src.Owner.Name) && String.IsNullOrWhiteSpace(src.Owner.Surname) 
                         ? src.OwnerId
                         : src.Owner.Name + " " + src.Owner.Surname + $" ({src.OwnerId})"))
                 .ForMember(dest => dest.Shelf, opt => opt.MapFrom(src => src.Shelf.Name));
