@@ -56,6 +56,7 @@ namespace library_backend
             services.AddSingleton(mapper);
 
             services.AddScoped<IItemService, ItemService>();
+            services.AddScoped<IRegisterService, RegisterService>();
 
             services.AddControllers();
         }
