@@ -23,8 +23,15 @@ namespace Library.Controllers
         [HttpPost]
         public IActionResult Register([FromBody]UserRegistrationDto userDto)
         {
-            var message = _registerService.Register(userDto);
-            return Ok(new { message });
+            try
+            {
+                var message = _registerService.Register(userDto);
+                return Ok(new { message = message });
+            }
+            catch (Exception ex)
+            {
+                return Conflict(new { error = ex.Message });
+            }
         }
     }
 }

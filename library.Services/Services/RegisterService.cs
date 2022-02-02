@@ -24,7 +24,7 @@ namespace Library.Services.Services
             var user = _dbContext.Users.Find(userDto.Username);
             if (user != null)
             {
-                throw new Exception("Nie udało się zarejestrować. Błąd: Użytkownik już istnieje.");
+                throw new Exception("User already exist.");
             }
 
             user = new User()
@@ -55,7 +55,7 @@ namespace Library.Services.Services
             }
             catch (Exception ex)
             {
-                var message = "Nie udało się zarejestrować. Błąd: " + ex.Message;
+                var message = "Register fail. Error: " + ex.Message;
                 throw new Exception(message);
             }
 
