@@ -76,6 +76,9 @@ namespace library_backend
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IRegisterService, RegisterService>();
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IUserService, UserService>();
+
+            services.AddHttpContextAccessor();
 
             services.AddControllers();
         }

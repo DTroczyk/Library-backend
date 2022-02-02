@@ -19,6 +19,13 @@ namespace Library
                         ? src.OwnerId
                         : src.Owner.Name + " " + src.Owner.Surname + $" ({src.OwnerId})"))
                 .ForMember(dest => dest.Shelf, opt => opt.MapFrom(src => src.Shelf.Name));
+            CreateMap<Shelf, ShelfVm>()
+                .ForMember(dest => dest.Owner, opt => opt.MapFrom(src =>
+                     String.IsNullOrWhiteSpace(src.Owner.Name) && String.IsNullOrWhiteSpace(src.Owner.Surname)
+                        ? src.OwnerId
+                        : src.Owner.Name + " " + src.Owner.Surname + $" ({src.OwnerId})"));
+            CreateMap<User, UserVm>()
+                .ForMember(dest => dest.Shelves, opt => opt.MapFrom(src => src.Shelves));
         }
     }
 }
