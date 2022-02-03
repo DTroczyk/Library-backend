@@ -1,5 +1,6 @@
 ﻿using Library.BLL.Entities;
 using Library.Services.Interfaces;
+using Library.ViewModels.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Library.Controllers
 {
-    [Route("")]
+    [Route("[controller]")]
     [ApiController]
     public class ItemController : Controller
     {
@@ -20,7 +21,7 @@ namespace Library.Controllers
             _itemService = itemService;
         }
 
-        // GET: ItemsController
+        // GET: item
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Item>>> GetItems()
         {
@@ -40,18 +41,19 @@ namespace Library.Controllers
             return View();
         }
 
-        // POST: ItemsController/Create
+        // POST: item/add
+        [Route("add")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> AddItem([FromBody]AddOrEditItemDto addItemDto)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var newItem = await _itemService.AddItem(addItemDto);
+                return Created($"item/{newItem.Id}", new { item = newItem });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return Conflict(new { error = ex.Message });
             }
         }
 

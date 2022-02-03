@@ -26,6 +26,8 @@ namespace Library
                         : src.Owner.Name + " " + src.Owner.Surname + $" ({src.OwnerId})"));
             CreateMap<User, UserVm>()
                 .ForMember(dest => dest.Shelves, opt => opt.MapFrom(src => src.Shelves));
+            CreateMap<AddOrEditItemDto, Item>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id == null ? 0 : src.Id));
         }
     }
 }

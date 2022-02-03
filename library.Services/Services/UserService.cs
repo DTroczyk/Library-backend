@@ -32,29 +32,24 @@ namespace Library.Services.Services
             if (identity != null)
             {
                 IList<Claim> claims = identity.Claims.ToList();
+
+                if (claims.Count == 0)
+                {
+                    throw new UnauthorizedAccessException("Access Denied.");
+                }
+
                 string login =  claims[0].Value;
-                User user = await _dbContext.Users
+                User user = await _dbContext.Users.AsNoTracking()
                     .Include(u => u.Shelves)
                     .ThenInclude(s => s.Items)
                     .FirstOrDefaultAsync(u => u.Username == login);
-
-                //var shelfVms = _mapper.Map<IEnumerable<ShelfVm>>(user.Shelves);
-                //UserVm userVm = new UserVm()
-                //{
-                //    Username = user.Username,
-                //    Name = user.Name,
-                //    Surname = user.Surname,
-                //    Shelves = shelfVms
-                //};
 
                 UserVm userVm = _mapper.Map<UserVm>(user);
 
                 return userVm;
             }
-            else
-            {
-                throw new UnauthorizedAccessException("Access Denied.");
-            }
+
+            throw new UnauthorizedAccessException("Access Denied.");
         }
 
         public Task<IEnumerable<UserVm>> GetUsers()

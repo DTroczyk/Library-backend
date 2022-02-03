@@ -1,4 +1,5 @@
 ﻿using Library.BLL.Entities;
+using Library.ViewModels.DTOs;
 using Library.ViewModels.VMs;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace Library.Services.Interfaces
 {
     public interface IItemService
     {
+        public Task<ItemVm> AddItem(AddOrEditItemDto addItemDto);
         public Task<IEnumerable<ItemVm>> GetItems();
     }
 }
