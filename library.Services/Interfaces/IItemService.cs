@@ -11,6 +11,8 @@ namespace Library.Services.Interfaces
     public interface IItemService
     {
         public Task<ItemVm> AddItem(AddOrEditItemDto addItemDto);
+        public Task<ItemVm> EditItem(int itemId, AddOrEditItemDto editItemDto);
+        public Task<ItemVm> GetItem(int id);
         public Task<IEnumerable<ItemVm>> GetItems();
     }
 }

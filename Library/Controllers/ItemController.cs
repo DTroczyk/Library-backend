@@ -29,16 +29,13 @@ namespace Library.Controllers
             return Ok(items);
         }
 
-        // GET: ItemsController/Details/5
-        public ActionResult Details(int id)
+        // GET: item/2
+        [HttpGet]
+        [Route("{itemId}")]
+        public  ActionResult<Item> GetItem(int itemId)
         {
-            return View();
-        }
-
-        // GET: ItemsController/Create
-        public ActionResult Create()
-        {
-            return View();
+            var item = _itemService.GetItem(itemId);
+            return Ok(item);
         }
 
         // POST: item/add
@@ -57,24 +54,19 @@ namespace Library.Controllers
             }
         }
 
-        // GET: ItemsController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ItemsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // PUT: item/edit/7
+        [Route("edit/{itemId}")]
+        [HttpPut]
+        public async Task<ActionResult> EditItem([FromRoute] int itemId, [FromBody] AddOrEditItemDto editItemDto)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var editedItem = await _itemService.EditItem(itemId, editItemDto);
+                return Created($"item/{itemId}", new { item = editedItem });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return Conflict(new { error = ex.Message });
             }
         }
 

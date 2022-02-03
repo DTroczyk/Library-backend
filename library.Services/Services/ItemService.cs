@@ -49,6 +49,48 @@ namespace Library.Services.Services
 
             return _mapper.Map<ItemVm>(item);
         }
+
+        public async Task<ItemVm> EditItem(int itemId, AddOrEditItemDto editItemDto)
+        {
+            if (editItemDto.Id == null)
+            {
+                throw new ArgumentNullException("Object is wrong.");
+            }
+
+            ItemVm itemVm = await GetItem(itemId);
+
+            UserVm userVm = await _userService.GetUser();
+
+            if (userVm == null || userVm.Username != itemVm.OwnerId)
+            {
+                throw new UnauthorizedAccessException("Access Denied.");
+            }
+
+            // Validation will be here
+
+            Item item = _mapper.Map<Item>(editItemDto);
+            item.OwnerId = userVm.Username;
+
+            _dbContext.Items.Update(item);
+            _dbContext.SaveChanges();
+
+            itemVm = await GetItem(itemId);
+
+            return itemVm;
+        }
+
+        public async Task<ItemVm> GetItem(int id)
+        {
+            var item = await _dbContext.Items.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+
+            if (item == null)
+            {
+                throw new KeyNotFoundException("Item was not found.");
+            }
+
+            var itemVm = _mapper.Map<ItemVm>(item);
+
+            return itemVm;
         }
 
         public async Task<IEnumerable<ItemVm>> GetItems()
