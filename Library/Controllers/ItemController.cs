@@ -70,24 +70,25 @@ namespace Library.Controllers
             }
         }
 
-        // GET: ItemsController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ItemsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        // DELETE: item/delete/7
+        [Route("delete/{itemId}")]
+        [HttpDelete]
+        public async Task<ActionResult> DeleteItem([FromRoute] int itemId)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (await _itemService.RemoveItem(itemId))
+                {
+                    return Ok(new { message = $"Item: {itemId} was deleted." });
+                }
+                else
+                {
+                    return NotFound(new { message = $"Item: {itemId} wasn't found." });
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return Conflict(new { error = ex.Message });
             }
         }
     }

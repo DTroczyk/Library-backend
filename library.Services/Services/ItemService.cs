@@ -105,5 +105,21 @@ namespace Library.Services.Services
             return itemVmEntities;
         }
 
+        public async Task<bool> RemoveItem(int id)
+        {
+            Item item = await _dbContext.Items.FindAsync(id);
+
+            UserVm userVm = await _userService.GetUser();
+
+            if (userVm == null || userVm.Username != item.OwnerId)
+            {
+                throw new UnauthorizedAccessException("Access Denied.");
+            }
+
+            _dbContext.Items.Remove(item);
+            _dbContext.SaveChanges();
+
+            return true;
+        }
     }
 }
