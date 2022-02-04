@@ -70,6 +70,14 @@ namespace library_backend
                 mc.AddProfile(new MappingProfile());
             });
 
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            }));
+
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
 
@@ -90,6 +98,8 @@ namespace library_backend
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("MyPolicy");
 
             app.UseHttpsRedirection();
 
