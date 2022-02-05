@@ -23,10 +23,11 @@ namespace Library.Controllers
         {
             try
             {
-                var token = _loginService.AuthenticateUser(login, password);
+                var loginUserDto = _loginService.AuthenticateUser(login, password);
                 return Ok(new 
                 { 
-                    token = token,
+                    token = loginUserDto.Token,
+                    user = loginUserDto.UserVm,
                     message = "Login success."
                 });
             }

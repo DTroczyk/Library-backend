@@ -59,7 +59,7 @@ namespace Library.Services.Services
                 throw new Exception(message);
             }
 
-            return "Użytkownik zarejestrowany.";
+            return "User has been registered.";
         }
     }
 }

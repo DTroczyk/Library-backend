@@ -1,6 +1,9 @@
-﻿using Library.BLL.Entities;
+﻿using AutoMapper;
+using Library.BLL.Entities;
 using Library.DAL.EF;
 using Library.Services.Interfaces;
+using Library.ViewModels.DTOs;
+using Library.ViewModels.VMs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -15,12 +18,15 @@ namespace Library.Services.Services
     public class LoginService : BaseService, ILoginService
     {
         private readonly IConfiguration _configuration;
-        public LoginService(ApplicationDbContext dbContext, IConfiguration configuration) : base(dbContext)
+        private readonly IMapper _mapper;
+
+        public LoginService(ApplicationDbContext dbContext, IConfiguration configuration, IMapper mapper) : base(dbContext)
         {
             _configuration = configuration;
+            _mapper = mapper;
         }
 
-        public string AuthenticateUser(string login, string password)
+        public LoginUserDto AuthenticateUser(string login, string password)
         {
             var user = IsValidUser(login, password);
 
@@ -29,9 +35,15 @@ namespace Library.Services.Services
                 throw new Exception("Access Denied.");
             }
 
+            var userVm = _mapper.Map<UserVm>(user);
             string token = GenerateJSONWebToken(user);
 
-            return token;
+            var result = new LoginUserDto() {
+                Token = token,
+                UserVm = userVm
+            };
+
+            return result;
         }
 
         private string GenerateJSONWebToken(User user)
